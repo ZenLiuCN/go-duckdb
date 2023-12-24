@@ -37,12 +37,13 @@ jobs:
       - name: Build
         shell: bash
         run: |
-          cd duckdb 
-          ls -al
-          python scripts/windows_ci.py
-          pwd &&\
+          cd duckdb  &&\
+          mkdir -p build/release &&\
+          python scripts/windows_ci.py &&\
           ls -al &&\
-          cmake -S ${GITHUB_WORKSPACE}/duckdb/ \
+          cmake \
+          -B build/release \
+          -S ${GITHUB_WORKSPACE}/duckdb/ \          
           -DBUILD_SHELL=0 \
           -DBUILD_BENCHMARK=0 \
           -DBUILD_JDBC=0 \
