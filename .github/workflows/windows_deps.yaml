@@ -38,6 +38,7 @@ jobs:
         shell: bash
         run: |
           cd duckdb 
+          ls -al
           python scripts/windows_ci.py
           cmake \
           -DBUILD_SHELL=0 \
