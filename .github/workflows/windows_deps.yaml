@@ -40,7 +40,9 @@ jobs:
           cd duckdb 
           ls -al
           python scripts/windows_ci.py
-          pwd
+          pwd &&\
+          cp CMakeLists.txt CMakeLists.text &&\
+          cp CMakeLists.text CMakeLists.txt &&\
           cmake \
           -DBUILD_SHELL=0 \
           -DBUILD_BENCHMARK=0 \
