@@ -41,8 +41,9 @@ jobs:
           ls -al
           python scripts/windows_ci.py
           pwd &&\
-          cp CMakeLists.txt CMakeLists.text &&\
-          cp CMakeLists.text CMakeLists.txt &&\
+          cp ${GITHUB_WORKSPACE}/duckdb/CMakeLists.txt ${GITHUB_WORKSPACE}/duckdb/CMakeLists.text &&\
+          cp ${GITHUB_WORKSPACE}/duckdb/CMakeLists.text ${GITHUB_WORKSPACE}/duckdb/CMakeLists.txt &&\
+          ls -al &&\
           cmake \
           -DBUILD_SHELL=0 \
           -DBUILD_BENCHMARK=0 \
@@ -53,7 +54,7 @@ jobs:
           -DCMAKE_GENERATOR_PLATFORM=x64 \
           -DENABLE_EXTENSION_AUTOLOADING=1 \ 
           -DENABLE_EXTENSION_AUTOINSTALL=1  \
-          -DDUCKDB_EXTENSION_CONFIGS="${GITHUB_WORKSPACE}/.github/config/bundled_extensions.cmake" \
+          -DDUCKDB_EXTENSION_CONFIGS="${GITHUB_WORKSPACE}/duckdb/.github/config/bundled_extensions.cmake" \
           -DBUILD_ODBC_DRIVER=1 -DDISABLE_UNITY=1 &&\
           pwd &&\
           cmake --build . --config Release
