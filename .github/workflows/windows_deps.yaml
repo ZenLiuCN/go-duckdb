@@ -41,25 +41,13 @@ jobs:
           mkdir -p build/release &&\
           python scripts/windows_ci.py &&\
           ls -al &&\
-          cmake \
-          -B build/release \          
-          -DBUILD_SHELL=0 \
-          -DBUILD_BENCHMARK=0 \
-          -DBUILD_JDBC=0 \
-          -DBUILD_ODBC=0 \
-          -DBUILD_PYTHON=0 \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_GENERATOR_PLATFORM=x64 \
-          -DENABLE_EXTENSION_AUTOLOADING=1 \ 
-          -DENABLE_EXTENSION_AUTOINSTALL=1  \
-          -DDUCKDB_EXTENSION_CONFIGS="${GITHUB_WORKSPACE}/duckdb/.github/config/bundled_extensions.cmake" \
-          -DBUILD_ODBC_DRIVER=1 -DDISABLE_UNITY=1 &&\
+          cmake -B build/release -DBUILD_SHELL=0 -DBUILD_BENCHMARK=0 -DBUILD_JDBC=0 -DBUILD_ODBC=0 -DBUILD_PYTHON=0 -DCMAKE_BUILD_TYPE=Release -DCMAKE_GENERATOR_PLATFORM=x64 -DENABLE_EXTENSION_AUTOLOADING=1 -DENABLE_EXTENSION_AUTOINSTALL=1 -DDUCKDB_EXTENSION_CONFIGS="${GITHUB_WORKSPACE}/duckdb/.github/config/bundled_extensions.cmake" -DBUILD_ODBC_DRIVER=1 -DDISABLE_UNITY=1 &&\
           pwd &&\
           cmake --build build/release --config Release
       - name: Deploy
         shell: bash
         run: |
-          cd duckdb 
+          cd duckdb/build/release 
           python scripts/amalgamation.py
           choco install zip -y --force
           zip -j libduckdb-windows-amd64.zip src/Release/duckdb_static.lib src/amalgamation/duckdb.hpp src/include/duckdb.h
