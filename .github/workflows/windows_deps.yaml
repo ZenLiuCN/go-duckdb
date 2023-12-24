@@ -13,11 +13,11 @@ jobs:
     name: Windows (64 Bit)
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-        repository: 'duckdb/duckdb'
+      - uses: actions/checkout@v4
+        repository: 'https://gtihub.com/duckdb/duckdb'
         ref: 'v0.9.2'
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - uses: actions/setup-python@v4
         with:
@@ -27,7 +27,7 @@ jobs:
         uses: hendrikmuhs/ccache-action@main
         with:
           key: ${{ github.job }}
-          save: ${{ github.ref == 'refs/heads/main' || github.repository != 'duckdb/duckdb' }}
+          save: ${{ github.ref == 'refs/v0.9.2' || github.repository != 'duckdb/duckdb' }}
 
       - name: Install pytest
         run: |
