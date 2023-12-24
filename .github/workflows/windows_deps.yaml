@@ -42,8 +42,7 @@ jobs:
           python scripts/windows_ci.py &&\
           ls -al &&\
           cmake \
-          -B build/release \
-          -S ${GITHUB_WORKSPACE}/duckdb/ \          
+          -B build/release \          
           -DBUILD_SHELL=0 \
           -DBUILD_BENCHMARK=0 \
           -DBUILD_JDBC=0 \
@@ -56,7 +55,7 @@ jobs:
           -DDUCKDB_EXTENSION_CONFIGS="${GITHUB_WORKSPACE}/duckdb/.github/config/bundled_extensions.cmake" \
           -DBUILD_ODBC_DRIVER=1 -DDISABLE_UNITY=1 &&\
           pwd &&\
-          cmake --build . --config Release
+          cmake --build build/release --config Release
       - name: Deploy
         shell: bash
         run: |
