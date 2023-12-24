@@ -1,0 +1,64 @@
+name: Build static library dependencies for windows
+on:
+  workflow_dispatch:
+
+  push:
+    branches-ignore:
+      - master
+    paths:
+      - ".github/workflows/**"
+      - "Makefile"
+jobs:
+  build-windows-amd64:
+    name: Windows (64 Bit)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        repository: 'duckdb/duckdb'
+        ref: 'v0.9.2'
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.7'
+
+      - name: Setup Ccache
+        uses: hendrikmuhs/ccache-action@main
+        with:
+          key: ${{ github.job }}
+          save: ${{ github.ref == 'refs/heads/main' || github.repository != 'duckdb/duckdb' }}
+
+      - name: Install pytest
+        run: |
+          python -m pip install pytest
+
+      - name: Build
+        shell: bash
+        run: |
+          python scripts/windows_ci.py
+          cmake \
+          -DBUILD_SHELL=0 \
+          -DBUILD_BENCHMARK=0 \
+          -DBUILD_JDBC=0 \
+          -DBUILD_ODBC=0 \
+          -DBUILD_PYTHON=0 \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_GENERATOR_PLATFORM=x64 \
+          -DENABLE_EXTENSION_AUTOLOADING=1 \ 
+          -DENABLE_EXTENSION_AUTOINSTALL=1  \
+          -DDUCKDB_EXTENSION_CONFIGS="${GITHUB_WORKSPACE}/.github/config/bundled_extensions.cmake" \
+          -DBUILD_ODBC_DRIVER=1 -DDISABLE_UNITY=1
+          cmake --build . --config Release
+      - name: Deploy
+        shell: bash
+        run: |
+          python scripts/amalgamation.py
+          choco install zip -y --force
+          zip -j libduckdb-windows-amd64.zip src/Release/duckdb_static.lib src/amalgamation/duckdb.hpp src/include/duckdb.h
+          python scripts/asset-upload-gha.py libduckdb-windows-amd64.zip duckdb_cli-windows-amd64.zip duckdb_odbc-windows-amd64.zip
+      - uses: actions/upload-artifact@v3
+        with:
+          name: duckdb-binaries-windows
+          path: |
+            libduckdb-windows-amd64.zip
