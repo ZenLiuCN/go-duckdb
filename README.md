@@ -114,3 +114,6 @@ LD_LIBRARY_PATH=/path/to/libs ./main
 CGO_ENABLED=1 CGO_LDFLAGS="-L/path/to/libs" go build -tags=duckdb_use_lib main.go
 DYLD_LIBRARY_PATH=/path/to/libs ./main
 ```
+
+# NOTE
+This fork contains test for build static lib with mingw64 for windows, should not use it, use original go-duckdb instead
